@@ -1,7 +1,9 @@
+import 'dart:ffi';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:thai_app/picture.dart';
 
 import 'topics_list.dart';
 
@@ -169,6 +171,10 @@ class MyLogin extends StatefulWidget{
 class _MyLoginState extends State<MyLogin>{
   @override
   Widget build(BuildContext context) {
+    List<Entity> entities = new List<Entity>();
+    entities.add(new Entity('airplane-3993.png', 'plane.mp3', 'ระนาบ', 'máy bay', 30, null, null, null));
+    entities.add(new Entity('ambulance.png', null, null, null, 50, null, null, 30));
+    List<Topic> topics = [new Topic('airplane.png', entities)];
     return ElevatedButton(
       style: ButtonStyle(
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -180,7 +186,7 @@ class _MyLoginState extends State<MyLogin>{
       ),
       child: Text('Login', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       onPressed: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => TopicsList()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => TopicsList(topics)));
       },
     );
   }
