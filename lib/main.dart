@@ -1,8 +1,9 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+
+import 'topics_list.dart';
 
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -140,14 +141,6 @@ class HomePage extends StatelessWidget {
                       //       Color.fromRGBO(143, 148, 251, .6)
                       //     ])),
                       child: MyLogin(),
-                      // child: Center(
-                      //   // child: Text(
-                      //   //   "Login",
-                      //   //   style: TextStyle(
-                      //   //       color: Colors.white, fontWeight: FontWeight.bold),
-                      //   // ),
-                      //   child: MyLogin()
-                      // ),
                     ),
                     SizedBox(
                       height: 70,
@@ -187,175 +180,8 @@ class _MyLoginState extends State<MyLogin>{
       ),
       child: Text('Login', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
       onPressed: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => NewActivity()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => TopicsList()));
       },
     );
   }
-}
-
-class NewActivity extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight
-    ]);
-    return WillPopScope(
-        child: Scaffold(
-            appBar: AppBar(
-              title: Text('Topic List'),
-            ),
-            // body: Center(
-            //   child: ElevatedButton(
-            //     onPressed: (){
-            //       //Navigate back to before activity
-            //       Navigator.pop(context);
-            //     },
-            //     child: Text('Back'),
-            //   ),
-            // ),
-            body: GridView.count(
-              crossAxisCount: 4,
-            children: [
-              Container(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints.expand(),
-                  child: FlatButton(
-                    onPressed: null,
-                    padding: EdgeInsets.all(0.0),
-                    child: Image.asset('assets/images/abc.png'),
-                  ),
-                ),
-              ),
-              Container(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints.expand(),
-                  child: FlatButton(
-                    onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => Vehicle()));
-                    },
-                    padding: EdgeInsets.all(0.0),
-                    child: Image.asset('assets/images/airplane.png'),
-                  ),
-                ),
-              ),
-              Container(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints.expand(),
-                  child: FlatButton(
-                    onPressed: null,
-                    padding: EdgeInsets.all(0.0),
-                    child: Image.asset('assets/images/bulb.png'),
-                  ),
-                ),
-              ),
-              Container(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints.expand(),
-                  child: FlatButton(
-                    onPressed: null,
-                    padding: EdgeInsets.all(0.0),
-                    child: Image.asset('assets/images/calendar.png'),
-                  ),
-                ),
-              )
-            ])
-        ),
-        onWillPop: () async {
-          SystemChrome.setPreferredOrientations([
-            DeviceOrientation.portraitUp,
-            DeviceOrientation.portraitDown,
-            DeviceOrientation.landscapeLeft,
-            DeviceOrientation.landscapeRight
-          ]);
-          return true;
-        });
-  }
-}
-
-class Vehicle extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/free-vector-landscape-illustration.jpg'),
-            fit: BoxFit.fill
-          )
-        ),
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-                left: 30,
-                child: FlatButton(
-                  onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Plane()));
-                  },
-                  padding: EdgeInsets.all(0.0),
-                  child: Image.asset('assets/images/airplane-3993.png', scale: 2),
-                )
-            )
-          ],
-        ),
-      )
-    );
-  }
-}
-
-class Plane extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.grey.withOpacity(0.5)
-        ),
-        child: Align(
-          alignment: Alignment.center,
-          child: AspectRatio(
-            aspectRatio: 1/1,
-            child: Container(
-              color: Colors.white,
-              child: Stack(
-                children: <Widget>[
-                  Positioned(
-                      child: Container(
-                        // margin: EdgeInsets.only(bottom: 150),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: AssetImage('assets/images/airplane-3993.png'),
-                            scale: 2
-                          )
-                        ),
-                      )
-                  ),
-                  Positioned(
-                      child: FlatButton(
-                        onPressed: null,
-                        padding: EdgeInsets.all(0.0),
-                        child: Image.asset('assets/images/headphone.png'),
-                      ),
-                    bottom: 50,
-                    right: 50,
-                  ),
-                  Positioned(
-                      bottom: 80,
-                      left: 30,
-                      child: Text('เครื่องบิน', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),),
-                  ),
-                  Positioned(
-                    bottom: 40,
-                    left: 30,
-                    child: Text('máy bay', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        )
-      ),
-    );
-  }
-
 }
