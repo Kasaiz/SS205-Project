@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "498796511298",
+    "project_id": "thai-app-f5443",
+    "storage_bucket": "thai-app-f5443.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498796511298:android:0b07f8ee0461cb8f2caddb",
+        "android_client_info": {
+          "package_name": "SS205.thai_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "498796511298-ru4k6fklq3kvdtjpvkjgbokov429vcvn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCNbGH9QppOJ8g-UgiKp1gxq3IJu7BS7g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "498796511298-ru4k6fklq3kvdtjpvkjgbokov429vcvn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

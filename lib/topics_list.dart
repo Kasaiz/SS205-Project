@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'picture.dart';
@@ -34,50 +35,6 @@ class TopicsList extends StatelessWidget {
                   ),
                 );
               }),
-              // [
-              //   Container(
-              //     child: ConstrainedBox(
-              //       constraints: BoxConstraints.expand(),
-              //       child: FlatButton(
-              //         onPressed: null,
-              //         padding: EdgeInsets.all(0.0),
-              //         child: Image.asset('assets/images/abc.png'),
-              //       ),
-              //     ),
-              //   ),
-              //   Container(
-              //     child: ConstrainedBox(
-              //       constraints: BoxConstraints.expand(),
-              //       child: FlatButton(
-              //         onPressed: (){
-              //           Navigator.push(context, MaterialPageRoute(builder: (context) => Vehicle()));
-              //         },
-              //         padding: EdgeInsets.all(0.0),
-              //         child: Image.asset('assets/images/airplane.png'),
-              //       ),
-              //     ),
-              //   ),
-              //   Container(
-              //     child: ConstrainedBox(
-              //       constraints: BoxConstraints.expand(),
-              //       child: FlatButton(
-              //         onPressed: null,
-              //         padding: EdgeInsets.all(0.0),
-              //         child: Image.asset('assets/images/bulb.png'),
-              //       ),
-              //     ),
-              //   ),
-              //   Container(
-              //     child: ConstrainedBox(
-              //       constraints: BoxConstraints.expand(),
-              //       child: FlatButton(
-              //         onPressed: null,
-              //         padding: EdgeInsets.all(0.0),
-              //         child: Image.asset('assets/images/calendar.png'),
-              //       ),
-              //     ),
-              //   )
-              // ]
             )),
         onWillPop: () async {
           SystemChrome.setPreferredOrientations([
@@ -86,6 +43,7 @@ class TopicsList extends StatelessWidget {
             DeviceOrientation.landscapeLeft,
             DeviceOrientation.landscapeRight
           ]);
+          await FirebaseAuth.instance.signOut();
           return true;
         });
   }

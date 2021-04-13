@@ -32,35 +32,8 @@ class Vehicle extends StatelessWidget {
                   child:
                       Image.asset('assets/images/'+entities[index].imageName, scale: 2),
                 )));
-          })
-              // <Widget>[
-              //   Positioned(
-              //       left: 30,
-              //       child: Container(
-              //         child: FlatButton(
-              //           onPressed: (){
-              //             Navigator.push(context, MaterialPageRoute(builder: (context) => Plane('airplane-3993.png','plane.mp3','ระนาบ','máy bay')));
-              //           },
-              //           padding: EdgeInsets.all(0.0),
-              //           child: Image.asset('assets/images/airplane-3993.png', scale: 2),
-              //         )
-              //       )
-              //   ),
-              //   Positioned(
-              //       left: 60,
-              //       bottom: 20,
-              //       top: null,
-              //       right: null,
-              //       child: Container(
-              //         child: FlatButton(
-              //           onPressed: null,
-              //           padding: EdgeInsets.all(0.0),
-              //           child: Image.asset('assets/images/ambulance.png', scale: 2,),
-              //         ),
-              //       )
-              //   )
-              // ],
-              ),
+              })
+          ),
         ),
         floatingActionButton: Menu());
   }
