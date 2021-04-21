@@ -3,9 +3,11 @@ import './menu.dart';
 import './object.dart';
 
 class Vehicle extends StatelessWidget {
+
+  final String bg;
   final List<Entity> entities;
 
-  Vehicle(this.entities);
+  Vehicle(this.bg, this.entities);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class Vehicle extends StatelessWidget {
         body: Container(
           decoration: BoxDecoration(
               image: DecorationImage(
-                  image: AssetImage('assets/images/free-vector-landscape-illustration.jpg'),
+                  image: AssetImage('assets/images/'+bg),
                   fit: BoxFit.fill)),
           child: Stack(
               children: List.generate(entities.length, (index) {

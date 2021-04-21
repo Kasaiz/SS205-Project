@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thai_app/picture.dart';
 import 'package:thai_app/signup.dart';
 import 'package:thai_app/topics_list.dart';
@@ -10,10 +12,20 @@ class MyLogin extends StatefulWidget{
 
 }
 
-class _MyLoginState extends State<MyLogin>{
+class _MyLoginState extends State<MyLogin> {
 
   final emailController = TextEditingController();
   final passController = TextEditingController();
+
+  bool _checked = false;
+  SharedPreferences login;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkLogin();
+  }
 
   @override
   void dispose() {
@@ -22,28 +34,11 @@ class _MyLoginState extends State<MyLogin>{
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
 
     bool pressed = false;
-
-    //data
-    List<Entity> entities = new List<Entity>();
-    entities.add(new Entity('airplane-3993.png', 'plane.mp3', 'ระนาบ', 'máy bay', 30, null, null, null));
-    entities.add(new Entity('ambulance.png', 'ambulance.mp3', 'รถพยาบาล', 'xe cứu thương', 50, null, null, 30));
-    entities.add(new Entity('delivery-truck.png', 'truck.mp3', 'รถบรรทุก', 'xe tải', null, null, 50, 10));
-    entities.add(new Entity('motorcycle-delivery.png', 'motorcycle.mp3', 'รถจักรยานยนต์', 'xe máy', null, null, 250, -10));
-    List<Topic> topics = [new Topic('airplane.png', entities)];
-    topics.add(new Topic('abc.png', null));
-    topics.add(new Topic('calendar.png', null));
-    topics.add(new Topic('spartan-helmet.png', null));
-    topics.add(new Topic('coin.png', null));
-    topics.add(new Topic('clock.png', null));
-    topics.add(new Topic('cooling-symbol.png', null));
-    topics.add(new Topic('home.png', null));
-    topics.add(new Topic('heart.png', null));
-
-
     return Scaffold(
       // resizeToAvoidBottomPadding: false,
       backgroundColor: Colors.white,
@@ -157,7 +152,17 @@ class _MyLoginState extends State<MyLogin>{
                       ),
                     ),
                     SizedBox(
-                      height: 30,
+                      // height: 30,
+                      child: CheckboxListTile(
+                        title: Text("Remember me"),
+                        controlAffinity: ListTileControlAffinity.platform,
+                        value: _checked,
+                        onChanged: (bool value){
+                          setState(() {
+                            _checked = value;
+                          });
+                        },
+                      ),
                     ),
                     Container(
                       height: 50,
@@ -180,39 +185,63 @@ class _MyLoginState extends State<MyLogin>{
                         onPressed: () async {
                           if(pressed==false) {
                             pressed=true;
-                            UserCredential userCredential;
-                            try {
-                              userCredential = await FirebaseAuth.instance
-                                  .signInWithEmailAndPassword(
-                                  email: emailController.text,
-                                  password: passController.text
-                              );
-                            } on FirebaseAuthException catch (e) {
-                              if (e.code == 'user-not-found') {
-                                print('No user found for that email.');
-                                showDialog(context: context, builder: (context) {
-                                  return AlertDialog(
-                                    content: Text('No user found for that email.'),);
-                                });
-                              } else if (e.code == 'wrong-password') {
-                                print('Wrong password provided for that user.');
-                                showDialog(context: context, builder: (context) {
-                                  return AlertDialog(
-                                    content: Text('Wrong password provided for that user.'),);
-                                });
+                            if (passController.text.isEmpty ||
+                                emailController.text.isEmpty) {
+                              showDialog(context: context, builder: (context) {
+                                return AlertDialog(
+                                  content: Text('Empty field(s)!'),);
+                              });
+                              pressed=false;
+                            }else {
+                              UserCredential userCredential;
+                              try {
+                                context.loaderOverlay.show();
+                                userCredential = await FirebaseAuth.instance
+                                    .signInWithEmailAndPassword(
+                                    email: emailController.text,
+                                    password: passController.text
+                                );
+
+                              } on FirebaseAuthException catch (e) {
+                                if (e.code == 'user-not-found') {
+                                  print('No user found for that email.');
+                                  showDialog(
+                                      context: context, builder: (context) {
+                                    return AlertDialog(
+                                      content: Text(
+                                          'No user found for that email.'),);
+                                  });
+                                } else if (e.code == 'wrong-password') {
+                                  print(
+                                      'Wrong password provided for that user.');
+                                  showDialog(
+                                      context: context, builder: (context) {
+                                    return AlertDialog(
+                                      content: Text(
+                                          'Wrong password provided for that user.'),);
+                                  });
+                                }
                               }
-                            }
-                            pressed=false;
-                            if (userCredential != null) {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) => TopicsList(topics)));
+                              if(context.loaderOverlay.visible){
+                                context.loaderOverlay.hide();
+                              }
+                              pressed = false;
+                              if (userCredential != null) {
+                                if (_checked) {
+                                  login.setString(
+                                      'email', emailController.text);
+                                }
+                                Navigator.push(context, MaterialPageRoute(
+                                    builder: (context) =>
+                                        TopicsList(getTopic())));
+                              }
                             }
                           }
                         },
                       ),
                     ),
                     SizedBox(
-                      height: 30,
+                      height: 15,
                     ),
                     // Text(
                     //   "Forgot Password?",
@@ -221,7 +250,7 @@ class _MyLoginState extends State<MyLogin>{
                     TextButton(
                         onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => Signup())),
                         child: Text('Sign up', style: TextStyle(color: Colors.blueAccent, fontStyle: FontStyle.italic),)
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -231,4 +260,63 @@ class _MyLoginState extends State<MyLogin>{
       ),
     );
   }
+
+  void checkLogin() async{
+    login = await SharedPreferences.getInstance();
+    String email = login.getString('email')??null;
+    if(email!=null){
+      Navigator.push(context, MaterialPageRoute(
+          builder: (context) => TopicsList(getTopic())));
+    }
+  }
+
+  List<Topic> getTopic(){
+    //vehicle topic
+    List<Entity> entities1 = [new Entity('airplane-3993.png', 'plane.mp3', 'ระนาบ', 'máy bay', 30, null, null, null)];
+    entities1.add(new Entity('ambulance.png', 'ambulance.mp3', 'รถพยาบาล', 'xe cứu thương', 50, null, null, 30));
+    entities1.add(new Entity('delivery-truck.png', 'truck.mp3', 'รถบรรทุก', 'xe tải', null, null, 50, 10));
+    entities1.add(new Entity('motorcycle-delivery.png', 'motorcycle.mp3', 'รถจักรยานยนต์', 'xe máy', null, null, 250, -10));
+    List<Topic> topics = [new Topic('airplane.png', 'free-vector-landscape-illustration.jpg', entities1)];
+
+    // animal topic
+    List<Entity> entities2 = [new Entity('bunny.png', 'bunny.mp3', 'กระต่าย', 'con thỏ', 50, null, null, 80)];
+    entities2.add(new Entity('bear.png', 'bear.mp3', 'หมี', 'con gấu', null, null, 50, 50));
+    entities2.add(new Entity('fox.png', 'fox.mp3', 'จิ้งจอก', 'cáo', 200, null, null, 60));
+    entities2.add(new Entity('owl.png', 'owl.mp3', 'นกฮูก', 'con cú', 250, 40, null, null));
+    entities2.add(new Entity('bird.png', 'bird.mp3', 'นก', 'chim', null, 100, 120, null));
+    topics.add(new Topic('cat-7009.png', 'animal-bg.jpg', entities2));
+
+    //classroom topic
+    List<Entity> classroom = [new Entity('board.png', 'board.mp3', 'คณะกรรมการ', 'bảng', null, 100, 215, null)];
+    classroom.add(new Entity('clock-object.png', 'clock.mp3', 'นาฬิกา', 'đồng hồ', 120, 100, null, null));
+    classroom.add(new Entity('table.png', 'table.mp3', 'โต๊ะ', 'bàn', null, null, 280, 40));
+    classroom.add(new Entity('chair.png', 'chair.mp3', 'เก้าอี้', 'cái ghế', null, null, 280, 10));
+    topics.add(new Topic('opened-book.png', 'classroom-bg.png', classroom));
+
+    //fruits topic
+    List<Entity> fruits = [new Entity('melon.png', 'melon.mp3', 'แตงโม', 'dưa', null, null, 250, 70)];
+    fruits.add(new Entity('orange.png', 'orange.mp3', 'ส้ม', 'trái cam', null, null, 280, 60));
+    fruits.add(new Entity('nho.png', 'grape.mp3', 'องุ่น', 'nho', 210, null, null, 60));
+    fruits.add(new Entity('apple.png', 'apple.mp3', 'แอปเปิ้ล', 'táo', 380, null, null, 60));
+    topics.add(new Topic('apple-3155.png', 'fruits-bg.png', fruits));
+
+    //weather topic
+    List<Entity> weather = [new Entity('raindrop-1580.png', 'rain.mp3', 'ฝน', 'mưa', 100, 50, null, null)];
+    weather.add(new Entity('lightning-bolt-4138.png', 'lightning.mp3', 'ฟ้าผ่า', 'tia chớp', null, 50, 100, null));
+    weather.add(new Entity('sun-3334.png', 'sunny.mp3', 'แดดจัด', 'nắng', 100, null, null, 50));
+    weather.add(new Entity('clouds-4269.png', 'cloud.mp3', 'เมฆ', 'đám mây', null, null, 100, 50));
+    topics.add(new Topic('cooling-symbol.png', 'weather-bg.png', weather));
+
+    //house topic
+    List<Entity> house = [new Entity('sofa.png', 'sofa.mp3', 'โซฟา', 'ghế sô pha', null, null, 150, 50)];
+    house.add(new Entity('light.png', 'ceilinglight.mp3', 'ไฟเพดาน', 'Đèn trần', null, 0, 250, null));
+    house.add(new Entity('tv.png', 'tv.mp3', 'โทรทัศน์', 'Tivi', 125, null, null, 101));
+    house.add(new Entity('window.png', 'window.mp3', 'หน้าต่าง', 'cửa sổ', null, 100, 100, null));
+    house.add(new Entity('cay.png', 'tree.mp3', 'ต้นไม้', 'cây', null, null, 50, 50));
+    house.add(new Entity('desk.png', 'cabinet.mp3', 'ตู้', 'tủ', 100, null, null, 50));
+    topics.add(new Topic('home.png', 'livingroom-bg.png', house));
+
+    return topics;
+  }
 }
+

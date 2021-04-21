@@ -1,10 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'picture.dart';
 
 class TopicsList extends StatelessWidget {
-  List<Topic> topics;
+  final List<Topic> topics;
 
   TopicsList(this.topics);
 
@@ -26,11 +27,14 @@ class TopicsList extends StatelessWidget {
                     child: FlatButton(
                       onPressed: () {
                         Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Vehicle(topics[index].entities)));
+                            MaterialPageRoute(builder: (context) => Vehicle(topics[index].bg, topics[index].entities)));
                       },
                       padding: EdgeInsets.all(0.0),
                       child: Image.asset(
-                          'assets/images/' + topics[index].topicImage),
+                          'assets/images/' + topics[index].topicImage,
+                        width: 80,
+                        height: 80,
+                      ),
                     ),
                   ),
                 );
@@ -44,6 +48,8 @@ class TopicsList extends StatelessWidget {
             DeviceOrientation.landscapeRight
           ]);
           await FirebaseAuth.instance.signOut();
+          final login = await SharedPreferences.getInstance();
+          login.remove('email');
           return true;
         });
   }
@@ -51,7 +57,8 @@ class TopicsList extends StatelessWidget {
 
 class Topic {
   String topicImage;
+  String bg;
   List<Entity> entities;
 
-  Topic(this.topicImage, this.entities);
+  Topic(this.topicImage, this.bg, this.entities);
 }

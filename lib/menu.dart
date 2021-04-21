@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:io';
 
 import 'package:thai_app/login.dart';
@@ -28,6 +29,9 @@ class Menu extends StatelessWidget{
           label: 'Sign out',
           onTap: () async {
             await FirebaseAuth.instance.signOut();
+            final login = await SharedPreferences.getInstance();
+            login.remove('email');
+
             SystemChrome.setPreferredOrientations([
               DeviceOrientation.portraitUp,
               DeviceOrientation.portraitDown,

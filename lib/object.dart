@@ -16,14 +16,16 @@ class Plane extends StatelessWidget{
     return Scaffold(
       body: Container(
           decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.5)
+              color: Colors.white70
           ),
           child: Align(
             alignment: Alignment.center,
             child: AspectRatio(
               aspectRatio: 1/1,
               child: Container(
-                color: Colors.white,
+                decoration: BoxDecoration(
+                  image: DecorationImage(image: AssetImage('assets/images/bg.png'), fit: BoxFit.fill)
+                ),
                 child: Stack(
                   children: <Widget>[
                     Positioned(
