@@ -14,17 +14,18 @@ Future<void> main() async {
   SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
 
   runApp(MaterialApp(
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      home: LoaderOverlay(
+    debugShowCheckedModeBanner: false,
+    initialRoute: '/',
+    home: LoaderOverlay(
         useDefaultLoading: false,
-          overlayColor: Colors.white,
-          overlayWidget: Center(
-            child: LoadingBouncingGrid.square(backgroundColor: Colors.blueAccent,),
+        overlayColor: Colors.white,
+        overlayWidget: Center(
+          child: LoadingBouncingGrid.square(
+            backgroundColor: Colors.blueAccent,
           ),
-          child: HomePage()
-      ),
-    ));
+        ),
+        child: HomePage()),
+  ));
 }
 
 class HomePage extends StatelessWidget {
@@ -40,5 +41,3 @@ class HomePage extends StatelessWidget {
     return MyLogin();
   }
 }
-
-
